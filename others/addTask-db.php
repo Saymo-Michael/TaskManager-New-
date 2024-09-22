@@ -1,25 +1,24 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = $_POST["title"];
+
+    if (trim($title) === "") {
+        exit();
+    }
+
     try {
         require_once "db.php";
 
-        $query = "SELECT * FROM ongoingTasks;";
+        $query = "INSERT INTO ongoingTasks (title) VALUES (?);";
         $stmnt = $connection->prepare($query);
-        
+
         if (!$stmnt) {
             die("Prepare failed: " . $connection->error);
         }
 
+        $stmnt->bind_param("s", $title);
         $stmnt->execute();
-        $result = $stmnt->get_result();
-
-        $taskList = array();
-        while ($row = $result->fetch_assoc()) {
-            $taskList[] = $row;
-        }
-        
-        echo json_encode($taskList);
 
         $stmnt->close();
         $connection->close();
@@ -29,5 +28,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else {
     header("Location: ../index.php");
-    exit();
 }
