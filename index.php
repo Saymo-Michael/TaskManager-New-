@@ -12,7 +12,7 @@
     <div class="task-list">
         <h1>To-Do List:</h1>
         
-        <form id="list-form" method="get" onsubmit="addTask(event)">
+        <form action="" id="list-form" method="post">
             <div class="wrapper">
                 <input type="text" id="add-taskField" name="add-taskField" placeholder="Add Task" required>
                 <button type="submit" id="add-button">+</button>
@@ -34,10 +34,9 @@
             <input type="date" id="due_date" name="due_date">
 
             <button type="submit" id="save-button">SAVE</button>
-            
         </form>
-
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="javascript/script.js"></script>
 </body>

@@ -1,52 +1,74 @@
-$(document).ready(function() {
-    loadTasks(); 
+    $(document).ready(function() {
+        loadTasks(); 
 
-    function loadTasks() {
-        $.ajax({
-            url: 'others/displayTask.php',
-            method: 'POST',
-            success: function(data) {
-                const tasks = JSON.parse(data);
-                $('#list-holder').empty(); 
-                tasks.forEach(task => {
-                    addTask(task.title, task.id); 
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching tasks:", status, error);
-            }
+        function loadTasks() {
+            $.ajax({
+                url: "others/displayTask.php",
+                method: "POST",
+                success: function(data) {
+                    const tasks = JSON.parse(data);
+                    $("#list-holder").empty(); 
+                    tasks.forEach(task => {
+                        createTask(task.title, task.id); 
+                    });
+                },
+                error: function(status, error) {
+                    console.error("Error fetching tasks:", status, error);
+                }
+            });
+        }
+
+        function createTask(taskValue, taskId) {
+            if (taskValue === "") return;
+
+            let taskItem = $("<div>", { class: "task-item", "data-task-id": taskId }); 
+            let checkbox = $("<input>", { type: "checkbox", class: "task-checkbox" });
+            let textSpan = $("<span>", { class: "task-text", text: taskValue });
+            let delButton = $("<button>", { text: "Delete", class: "delete-button" });
+
+            taskItem.append(checkbox).append(textSpan).append(delButton);
+
+            delButton.on("click", function() {
+                deleteToDatabase(taskId, textSpan.text());
+            });
+
+            $("#list-holder").append(taskItem); 
+        }
+
+        $("#list-form").on("submit", function(event) { 
+            event.preventDefault();
+            const taskTitle = $("#add-taskField").val();
+            addToDatabase(taskTitle);
         });
-    }
 
-    function addTask(taskValue, taskId) {
-        if (taskValue === "") return;
+        function addToDatabase(taskTitle) {
+            $.ajax({
+                url: "others/addTask-db.php",
+                method: "POST",
+                data: {title: taskTitle},
+                success: function() {
+                    loadTasks();
+                    $("#add-taskField").val(""); 
+                },
+                error: function(status, error) {
+                    console.error("Error fetching tasks:", status, error);
+                }
+            });
+        }
 
-        // Create elements using jQuery
-        let taskItem = $('<div>', { class: 'task-item', 'data-task-id': taskId }); 
-        let checkbox = $('<input>', { type: 'checkbox', class: 'task-checkbox' });
-        let textSpan = $('<span>', { class: 'task-text', text: taskValue });
-        let delButton = $('<button>', { text: 'Delete', class: 'delete-button' });
-
-        // Append elements
-        taskItem.append(checkbox).append(textSpan).append(delButton);
-
-        // Attach event handlers for delete
-        delButton.on('click', function() {
-            deleteTask(taskId, taskItem);
-        });
-
-        $('#list-holder').append(taskItem); // Append to the list-holder
-    }
-
-    function deleteTask(taskId, taskElement) {
-        $.post('contains/deleteTask.php', { id: taskId }, function(response) {
-            if (response.success) {
-                taskElement.remove(); // Remove task element
-            } else {
-                console.error("Failed to delete task");
-            }
-        }, 'json').fail(function(error) {
-            console.error("Error:", error);
-        });
-    }
-});
+        function deleteToDatabase(taskId, taskTitle) {
+            $.ajax({
+                url: "others/deleteTask-db.php",
+                method: "POST",
+                data: {
+                    id: taskId,
+                    title: taskTitle},
+                success: function() {
+                    loadTasks();
+                },
+                error: function(status, error) {
+                    console.error("Error fetching tasks:", status, error);
+                }
+            });
+        }
+    });
