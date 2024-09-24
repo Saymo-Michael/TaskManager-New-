@@ -20,6 +20,10 @@
         </form>
         
         <div class="list-holder" id="list-holder"></div>
+
+        <h2>Completed Tasks</h2>
+        <div class="completedList-holder" id="completedList-holder"></div>
+        
     </div>
 
     <div class="task-details">

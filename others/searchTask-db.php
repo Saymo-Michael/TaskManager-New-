@@ -1,35 +1,34 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST["id"];
-    $title = $_POST["title"];
-
-    if (trim($title) === "") {
-        exit();
-    }
+    $taskId = $_POST["id"];
 
     try {
         require_once "db.php";
     
-        $query = "DELETE FROM ongoingTasks WHERE id = ? && title = ?; DELETE FROM completedTasks WHERE id = ? && title = ?;";
+        $query = "SELECT * FROM ongoingTasks WHERE id = ?;";
         $stmnt = $connection->prepare($query);
         
         if (!$stmnt) {
             die("Prepare failed: " . $connection->error);
         }
     
-        $stmnt->bind_param("is", $id, $title);
+        
+        $stmnt->bind_param("i", $taskId);
         $stmnt->execute();
-    
+
+        $result = $stmnt->get_result();
+        $row = $result->fetch_assoc();
+
         $stmnt->close();
         $connection->close();
-    
-        header("Location: ../index.php");
-        die();
+        
+        echo json_encode($row);
 
     } catch (mysqli_sql_exception $e) {
         die("Connection Failed: " . $e->getMessage());
     }
-} else {
+}
+else {
     header("Location: ../index.php");
 }
