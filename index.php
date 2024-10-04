@@ -12,13 +12,6 @@
     <div class="task-list">
         <h1>To-Do List:</h1>
         
-        <form action="" id="list-form" method="post">
-            <div class="wrapper">
-                <input type="text" id="add-taskField" name="add-taskField" placeholder="Add Task" required>
-                <button type="submit" id="add-button">+</button>
-            </div>
-        </form>
-        
         <div class="list-holder" id="list-holder"></div>
 
         <h2>Completed Tasks</h2>
@@ -27,7 +20,9 @@
     </div>
 
     <div class="task-details">
-        <form action="contains/updateTask.php" id="details-form" method="post">
+        <form id="details-form" method="post">
+            <input type="hidden" id="task-id" name="task-id">
+
             <label for="title" class="task-label">Task Details</label>
             <input type="text" id="title" name="title" placeholder="Enter Title">
 

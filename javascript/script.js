@@ -85,22 +85,52 @@ $(document).ready(function () {
     $("#completedList-holder").append(taskItem);
   }
 
-  $("#list-form").on("submit", function (event) {
+  $("#details-form").on("submit", function (event) {
     event.preventDefault();
-    const taskTitle = $("#add-taskField").val();
-    addToDatabase(taskTitle);
+    const taskTitle = $("#title").val();
+    const taskDescription = $("#description").val();
+    const due_date = $("#due_date").val();
+    const taskId = $("#task-id").val();
+
+    if (taskId) {
+        updateInDatabase(taskId, taskTitle, taskDescription, due_date);
+    } else {
+        addToDatabase(taskTitle, taskDescription, due_date);
+    }
   });
 
-  function addToDatabase(taskTitle) {
+  function addToDatabase(taskTitle, taskDescription, due_date) {
     $.ajax({
       url: "others/addTask-db.php",
       method: "POST",
-      data: { title: taskTitle },
+      data: { title: taskTitle,
+              description: taskDescription,
+              date: due_date
+            },
       success: function () {
         loadOngoingTasks();
         loadCompletedTasks();
         clearTaskDetails();
-        $("#add-taskField").val("");
+      },
+      error: function (status, error) {
+        console.error("Error fetching tasks:", status, error);
+      },
+    });
+  }
+
+  function updateInDatabase(taskId, taskTitle, taskDescription, due_date) {
+    $.ajax({
+      url: "others/updateTask-db.php",
+      method: "POST",
+      data: { id: taskId,
+              title: taskTitle,
+              description: taskDescription,
+              date: due_date
+            },
+      success: function () {
+        loadOngoingTasks();
+        loadCompletedTasks();
+        clearTaskDetails();
       },
       error: function (status, error) {
         console.error("Error fetching tasks:", status, error);
@@ -151,6 +181,7 @@ $(document).ready(function () {
     $("#title").val(row.title);
     $("#description").val(row.description || "");
     $("#due_date").val(row.date || "");
+    $("#task-id").val(row.id)
   }
 
   $(document).on("mousedown", function (event) {
@@ -171,6 +202,7 @@ $(document).ready(function () {
     $("#title").val("");
     $("#description").val("");
     $("#due_date").val("");
+    $("#task-id").val("");
   }
 
   function transferToCompleted(taskId, taskTitle) {
