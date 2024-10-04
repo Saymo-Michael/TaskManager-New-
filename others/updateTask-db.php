@@ -4,7 +4,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $description = $_POST["description"];
     $date = $_POST["date"];
-
+    $taskId = $_POST["id"];
+    
     if (trim($title) === "") {
         exit();
     }
@@ -12,19 +13,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         require_once "db.php";
 
-        $query = "INSERT INTO ongoingTasks (`title`, `description`, `date`) VALUES (?, ?, ?);";
+        $query = "UPDATE ongoingTasks SET `title` = ?, `description` = ?, `date` = ? WHERE id = ?";
         $stmnt = $connection->prepare($query);
 
         if (!$stmnt) {
             die("Prepare failed: " . $connection->error);
         }
 
-        $stmnt->bind_param("sss", $title, $description, $date);
+        $stmnt->bind_param("sssi", $title, $description, $date, $taskId); 
         $stmnt->execute();
 
         $stmnt->close();
         $connection->close();
-
+        
         header("Location: ../index.php");
         die();
 
