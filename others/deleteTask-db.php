@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         require_once "db.php";
-    
+
         $query1 = "DELETE FROM ongoingTasks WHERE id = ? AND title = ?";
         $stmnt1 = $connection->prepare($query1);
         if (!$stmnt1) {
@@ -23,16 +23,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $query2 = "DELETE FROM completedTasks WHERE id = ? AND title = ?";
         $stmnt2 = $connection->prepare($query2);
-        if (!$stmn2) {
+        if (!$stmnt2) {
             die("Prepare failed: " . $connection->error);
         }
 
         $stmnt2->bind_param("is", $id, $title);
         $stmnt2->execute();
         $stmnt2->close();
-    
+
         $connection->close();
-    
+
         header("Location: ../index.php");
         die();
 

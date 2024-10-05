@@ -57,7 +57,11 @@ $(document).ready(function () {
     });
 
     delButton.on("click", function () {
-      deleteToDatabase(taskId, textSpan.text());
+      var confirmation = confirm("Are you sure you want to delete this item?");
+      if (confirmation) {
+        deleteToDatabase(taskId, textSpan.text());
+        alert("Item deleted.");
+      }
     });
 
     $("#list-holder").append(taskItem);
@@ -79,7 +83,11 @@ $(document).ready(function () {
     });
 
     delButton.on("click", function () {
-      deleteToDatabase(taskId, textSpan.text());
+      var confirmation = confirm("Are you sure you want to delete this item?");
+      if (confirmation) {
+        deleteToDatabase(taskId, textSpan.text());
+        alert("Item deleted.");
+      }
     });
 
     $("#completedList-holder").append(taskItem);
@@ -93,9 +101,9 @@ $(document).ready(function () {
     const taskId = $("#task-id").val();
 
     if (taskId) {
-        updateInDatabase(taskId, taskTitle, taskDescription, due_date);
+      updateInDatabase(taskId, taskTitle, taskDescription, due_date);
     } else {
-        addToDatabase(taskTitle, taskDescription, due_date);
+      addToDatabase(taskTitle, taskDescription, due_date);
     }
   });
 
@@ -103,10 +111,7 @@ $(document).ready(function () {
     $.ajax({
       url: "others/addTask-db.php",
       method: "POST",
-      data: { title: taskTitle,
-              description: taskDescription,
-              date: due_date
-            },
+      data: { title: taskTitle, description: taskDescription, date: due_date },
       success: function () {
         loadOngoingTasks();
         loadCompletedTasks();
@@ -122,11 +127,12 @@ $(document).ready(function () {
     $.ajax({
       url: "others/updateTask-db.php",
       method: "POST",
-      data: { id: taskId,
-              title: taskTitle,
-              description: taskDescription,
-              date: due_date
-            },
+      data: {
+        id: taskId,
+        title: taskTitle,
+        description: taskDescription,
+        date: due_date,
+      },
       success: function () {
         loadOngoingTasks();
         loadCompletedTasks();
@@ -181,7 +187,7 @@ $(document).ready(function () {
     $("#title").val(row.title);
     $("#description").val(row.description || "");
     $("#due_date").val(row.date || "");
-    $("#task-id").val(row.id)
+    $("#task-id").val(row.id);
   }
 
   $(document).on("mousedown", function (event) {
@@ -242,5 +248,4 @@ $(document).ready(function () {
       },
     });
   }
-
 });
