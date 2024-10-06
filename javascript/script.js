@@ -102,6 +102,8 @@ $(document).ready(function () {
 
     if (taskId && confirm("Are you sure you want to update this task?")) {
       updateInDatabase(taskId, taskTitle, taskDescription, due_date);
+    } else if (taskId) {
+      clearTaskDetails();
     } else {
       addToDatabase(taskTitle, taskDescription, due_date);
     }
