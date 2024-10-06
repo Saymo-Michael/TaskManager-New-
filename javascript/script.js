@@ -56,9 +56,9 @@ $(document).ready(function () {
       transferToCompleted(taskId, textSpan.text());
     });
 
-    delButton.on("click", function () {
-      var confirmation = confirm("Are you sure you want to delete this item?");
-      if (confirmation) {
+    delButton.on("click", function (event) {
+      event.stopPropagation();
+      if (confirm("Are you sure you want to delete this item?")) {
         deleteToDatabase(taskId, textSpan.text());
         alert("Item deleted.");
       }
@@ -82,9 +82,9 @@ $(document).ready(function () {
       transferToOngoing(taskId, textSpan.text());
     });
 
-    delButton.on("click", function () {
-      var confirmation = confirm("Are you sure you want to delete this item?");
-      if (confirmation) {
+    delButton.on("click", function (event) {
+      event.stopPropagation();
+      if (confirm("Are you sure you want to delete this item?")) {
         deleteToDatabase(taskId, textSpan.text());
         alert("Item deleted.");
       }
@@ -100,7 +100,7 @@ $(document).ready(function () {
     const due_date = $("#due_date").val();
     const taskId = $("#task-id").val();
 
-    if (taskId) {
+    if (taskId && confirm("Are you sure you want to update this task?")) {
       updateInDatabase(taskId, taskTitle, taskDescription, due_date);
     } else {
       addToDatabase(taskTitle, taskDescription, due_date);
